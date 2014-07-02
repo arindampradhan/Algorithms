@@ -1,21 +1,69 @@
-import sys
-import BaseHTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
+
+# The keys of the dictionary above are the nodes of our graph
+# An edge can be seen as a 2-tuple with nodes as elements, i.e. ("a","b")
 
 
-HandlerClass = SimpleHTTPRequestHandler
-ServerClass  = BaseHTTPServer.HTTPServer
-Protocol     = "HTTP/1.0"
+graph = { "a" : ["c"],
+          "b" : ["c", "e"],
+          "c" : ["a", "b", "d", "e"],
+          "d" : ["c"],
+          "e" : ["c", "b"],
+          "f" : []
+        }
 
-if sys.argv[1:]:
-    port = int(sys.argv[1])
-else:
-    port = 8000
-server_address = ('127.0.0.1', port)
 
-HandlerClass.protocol_version = Protocol
-httpd = ServerClass(server_address, HandlerClass)
 
-sa = httpd.socket.getsockname()
-print "Serving HTTP on", sa[0], "port", sa[1], "..."
-httpd.serve_forever()
+# This code generates edges in terms of touples
+def generate_edges(graph):
+	edges = []
+	for node in graph:
+		for neighbour in graph[node]:
+			edges.append((node,neighbour))
+
+	return edges
+
+print (generate_edges(graph))
+
+
+# The following Python function calculates the isolated nodes
+#  see f
+
+def find_isolated_nodes(graph):
+	isolated = []
+	for node in graph:
+		if not graph[node]:
+			isolated += node
+	print isolated
+	return isolated
+
+def recursive_dfs(graph,start,path = []):
+	for node in graph[start]:
+		if not node in path:
+			path=recursive_dfs(graph,node,path)
+	return
+
+
+
+
+def iterative_dfs(graph,start,path=[]):
+	q=[start]
+	while q:
+	v=q.pop(0)
+	if v not in path:
+		path=path+[v]
+		q=graph[v]+q
+	return path
+
+def iterative_bfs(graph,start,path=[]):
+	q=[start]
+	while q:
+		v = q.pop(0)
+		if not v in path:
+		q=q+graph[v]
+	return path
+
+
+
+
+
+
