@@ -1,4 +1,0 @@
-Algorithms
-==========
-
-Algorithms implementation 
