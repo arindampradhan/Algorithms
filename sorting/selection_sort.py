@@ -1,3 +1,5 @@
+# Non-recursive, slow, O(n^2), not - inplace (non constant time)
+
 def selection_sort(A, n):
     for i in range(0, n - 1): # 0 ..... n-2 as n - 2 will be the largest
         i_min = i
