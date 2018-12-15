@@ -1,3 +1,4 @@
+import random
 # Divide and conquer
 # In place
 # O(nlogn) - best
@@ -15,7 +16,9 @@ def partition(A, start, end):
 
 # better alternative
 # def random_partition(A, start, end):
-#    pass  
+#     pIndex = random.choice(range(start+1, end))
+#     A[pIndex], A[end] = A[end], A[pIndex]
+#     partition(A,start,end)
 
 def quick_sort(A, start, end):
     if start < end:
