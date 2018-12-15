@@ -13,6 +13,10 @@ def partition(A, start, end):
     A[pIndex], A[end] = A[end], A[pIndex]
     return pIndex
 
+# better alternative
+# def random_partition(A, start, end):
+#    pass  
+
 def quick_sort(A, start, end):
     if start < end:
         partitionIndex = partition(A, start, end)
