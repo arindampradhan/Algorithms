@@ -1,3 +1,4 @@
+# Divide and conquer
 # In place
 # O(nlogn) - best
 # O(n^2) - worst
