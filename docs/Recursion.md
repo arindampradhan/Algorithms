@@ -217,3 +217,92 @@ graph TD
     C1 --> V12["Base case - Add [] to ans"]
 
 ```
+
+
+#### Permutations
+
+```tsx
+function permute(nums: number[]): number[][] {
+    const ans: number[][] = [];
+    const ds: number[] = [];
+    const freq: boolean[] = Array(nums.length).fill(false);
+
+    function recurPermute(ds: number[], nums: number[], ans: number[][], freq: boolean[]): void {
+        if (ds.length === nums.length) {
+            ans.push([...ds]); // Push a copy of ds to avoid mutation
+            return;
+        }
+        for (let i = 0; i < nums.length; i++) {
+            if (!freq[i]) {
+                ds.push(nums[i]);
+                freq[i] = true;
+                recurPermute(ds, nums, ans, freq);
+                freq[i] = false;
+                ds.pop();
+            }
+        }
+    }
+
+    recurPermute(ds, nums, ans, freq);
+    return ans;
+}
+
+// Usage example
+const nums = [1, 2, 3];
+console.log("All Permutations are:", permute(nums));
+```
+
+```mermaid
+flowchart TD
+    Start --> L1["Level 1: Initial Call recurPermute([], freq=[false, false, false])"]
+    
+    L1 --> Choose1_L1["Choose 1"] --> L2_1["Level 2: recurPermute([1], freq=[true, false, false])"]
+    L1 --> Choose2_L1["Choose 2"] --> L2_2["Level 2: recurPermute([2], freq=[false, true, false])"]
+    L1 --> Choose3_L1["Choose 3"] --> L2_3["Level 2: recurPermute([3], freq=[false, false, true])"]
+    
+    %% Level 2 with [1]
+    L2_1 --> Choose2_L2_1["Choose 2"] --> L3_1["Level 3: recurPermute([1, 2], freq=[true, true, false])"]
+    L2_1 --> Choose3_L2_1["Choose 3"] --> L3_2["Level 3: recurPermute([1, 3], freq=[true, false, true])"]
+
+    %% Level 3 with [1, 2]
+    L3_1 --> Choose3_L3_1["Choose 3"] --> Complete1["Complete Permutation: [1, 2, 3]"]
+    Complete1 --> Backtrack3_1["Backtrack: Remove 3"]
+
+    %% Level 3 with [1, 3]
+    L3_2 --> Choose2_L3_2["Choose 2"] --> Complete2["Complete Permutation: [1, 3, 2]"]
+    Complete2 --> Backtrack3_2["Backtrack: Remove 2"]
+
+    %% Backtracking to Level 1 choices after exploring [1]
+    Backtrack3_1 --> Backtrack2_1["Backtrack: Remove 2"] --> Backtrack1_1["Backtrack: Remove 1"]
+    
+    %% Level 2 with [2]
+    L2_2 --> Choose1_L2_2["Choose 1"] --> L3_3["Level 3: recurPermute([2, 1], freq=[true, true, false])"]
+    L2_2 --> Choose3_L2_2["Choose 3"] --> L3_4["Level 3: recurPermute([2, 3], freq=[false, true, true])"]
+    
+    %% Level 3 with [2, 1]
+    L3_3 --> Choose3_L3_3["Choose 3"] --> Complete3["Complete Permutation: [2, 1, 3]"]
+    Complete3 --> Backtrack3_3["Backtrack: Remove 3"]
+
+    %% Level 3 with [2, 3]
+    L3_4 --> Choose1_L3_4["Choose 1"] --> Complete4["Complete Permutation: [2, 3, 1]"]
+    Complete4 --> Backtrack3_4["Backtrack: Remove 1"]
+
+    %% Backtracking to Level 1 choices after exploring [2]
+    Backtrack3_3 --> Backtrack2_2["Backtrack: Remove 1"] --> Backtrack1_2["Backtrack: Remove 2"]
+    
+    %% Level 2 with [3]
+    L2_3 --> Choose1_L2_3["Choose 1"] --> L3_5["Level 3: recurPermute([3, 1], freq=[true, false, true])"]
+    L2_3 --> Choose2_L2_3["Choose 2"] --> L3_6["Level 3: recurPermute([3, 2], freq=[false, true, true])"]
+    
+    %% Level 3 with [3, 1]
+    L3_5 --> Choose2_L3_5["Choose 2"] --> Complete5["Complete Permutation: [3, 1, 2]"]
+    Complete5 --> Backtrack3_5["Backtrack: Remove 2"]
+
+    %% Level 3 with [3, 2]
+    L3_6 --> Choose1_L3_6["Choose 1"] --> Complete6["Complete Permutation: [3, 2, 1]"]
+    Complete6 --> Backtrack3_6["Backtrack: Remove 1"]
+
+    %% Final backtrack to end
+    Backtrack3_6 --> End["End of recursion"]
+
+```
