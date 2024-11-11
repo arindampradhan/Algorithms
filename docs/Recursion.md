@@ -306,3 +306,161 @@ flowchart TD
     Backtrack3_6 --> End["End of recursion"]
 
 ```
+
+#### Permutations Swap
+
+```tsx
+function permute(nums: number[]): number[][] {
+    const ans: number[][] = [];
+
+    function recurPermute(index: number): void {
+        if (index === nums.length) {
+            ans.push([...nums]); // Push a copy of nums to avoid reference issues
+            return;
+        }
+        for (let i = index; i < nums.length; i++) {
+            [nums[index], nums[i]] = [nums[i], nums[index]]; // Swap elements
+            recurPermute(index + 1);
+            [nums[index], nums[i]] = [nums[i], nums[index]]; // Backtrack by swapping back
+        }
+    }
+
+    recurPermute(0);
+    return ans;
+}
+
+// Example usage
+const nums = [1, 2, 3];
+const permutations = permute(nums);
+console.log("All Permutations are:");
+permutations.forEach(permutation => console.log(permutation));
+
+```
+
+```mermaid
+flowchart TD
+    Start --> L1["Level 1: Initial Call recurPermute(0, nums=[1, 2, 3])"]
+    
+    %% Level 1
+    L1 --> Swap1_L1["Swap index 0 with 0 (nums=[1, 2, 3])"] --> L2_1["Level 2: recurPermute(1, nums=[1, 2, 3])"]
+    L1 --> Swap2_L1["Swap index 0 with 1 (nums=[2, 1, 3])"] --> L2_2["Level 2: recurPermute(1, nums=[2, 1, 3])"]
+    L1 --> Swap3_L1["Swap index 0 with 2 (nums=[3, 2, 1])"] --> L2_3["Level 2: recurPermute(1, nums=[3, 2, 1])"]
+
+    %% Level 2 with nums=[1, 2, 3]
+    L2_1 --> Swap1_L2_1["Swap index 1 with 1 (nums=[1, 2, 3])"] --> L3_1["Level 3: recurPermute(2, nums=[1, 2, 3])"]
+    L2_1 --> Swap2_L2_1["Swap index 1 with 2 (nums=[1, 3, 2])"] --> L3_2["Level 3: recurPermute(2, nums=[1, 3, 2])"]
+
+    %% Level 3 with nums=[1, 2, 3]
+    L3_1 --> Swap1_L3_1["Swap index 2 with 2 (nums=[1, 2, 3])"] --> Complete1["Complete Permutation: [1, 2, 3]"]
+    Complete1 --> Backtrack_L3_1["Backtrack: Restore nums=[1, 2, 3]"]
+
+    %% Level 3 with nums=[1, 3, 2]
+    L3_2 --> Swap1_L3_2["Swap index 2 with 2 (nums=[1, 3, 2])"] --> Complete2["Complete Permutation: [1, 3, 2]"]
+    Complete2 --> Backtrack_L3_2["Backtrack: Restore nums=[1, 2, 3]"]
+
+    %% Backtrack to Level 1 with nums=[1, 2, 3]
+    Backtrack_L3_1 --> Backtrack_L2_1["Backtrack: Restore nums=[1, 2, 3]"]
+
+    %% Level 2 with nums=[2, 1, 3]
+    L2_2 --> Swap1_L2_2["Swap index 1 with 1 (nums=[2, 1, 3])"] --> L3_3["Level 3: recurPermute(2, nums=[2, 1, 3])"]
+    L2_2 --> Swap2_L2_2["Swap index 1 with 2 (nums=[2, 3, 1])"] --> L3_4["Level 3: recurPermute(2, nums=[2, 3, 1])"]
+
+    %% Level 3 with nums=[2, 1, 3]
+    L3_3 --> Swap1_L3_3["Swap index 2 with 2 (nums=[2, 1, 3])"] --> Complete3["Complete Permutation: [2, 1, 3]"]
+    Complete3 --> Backtrack_L3_3["Backtrack: Restore nums=[2, 1, 3]"]
+
+    %% Level 3 with nums=[2, 3, 1]
+    L3_4 --> Swap1_L3_4["Swap index 2 with 2 (nums=[2, 3, 1])"] --> Complete4["Complete Permutation: [2, 3, 1]"]
+    Complete4 --> Backtrack_L3_4["Backtrack: Restore nums=[2, 1, 3]"]
+
+    %% Backtrack to Level 1 with nums=[1, 2, 3]
+    Backtrack_L3_3 --> Backtrack_L2_2["Backtrack: Restore nums=[1, 2, 3]"]
+
+    %% Level 2 with nums=[3, 2, 1]
+    L2_3 --> Swap1_L2_3["Swap index 1 with 1 (nums=[3, 2, 1])"] --> L3_5["Level 3: recurPermute(2, nums=[3, 2, 1])"]
+    L2_3 --> Swap2_L2_3["Swap index 1 with 2 (nums=[3, 1, 2])"] --> L3_6["Level 3: recurPermute(2, nums=[3, 1, 2])"]
+
+    %% Level 3 with nums=[3, 2, 1]
+    L3_5 --> Swap1_L3_5["Swap index 2 with 2 (nums=[3, 2, 1])"] --> Complete5["Complete Permutation: [3, 2, 1]"]
+    Complete5 --> Backtrack_L3_5["Backtrack: Restore nums=[3, 2, 1]"]
+
+    %% Level 3 with nums=[3, 1, 2]
+    L3_6 --> Swap1_L3_6["Swap index 2 with 2 (nums=[3, 1, 2])"] --> Complete6["Complete Permutation: [3, 1, 2]"]
+    Complete6 --> Backtrack_L3_6["Backtrack: Restore nums=[3, 2, 1]"]
+
+    %% Final backtrack to end
+    Backtrack_L3_5 --> End["End of recursion"]
+```
+
+#### Sudoku Solver
+
+```tsx
+type Board = (string | '.')[][];
+
+function isValid(board: Board, row: number, col: number, c: string): boolean {
+    for (let i = 0; i < 9; i++) {
+        if (board[i][col] === c) return false;
+        if (board[row][i] === c) return false;
+        if (board[3 * Math.floor(row / 3) + Math.floor(i / 3)][3 * Math.floor(col / 3) + (i % 3)] === c) return false;
+    }
+    return true;
+}
+
+function solveSudoku(board: Board): boolean {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[0].length; j++) {
+            if (board[i][j] === '.') {
+                for (let c = '1'; c <= '9'; c = String.fromCharCode(c.charCodeAt(0) + 1)) {
+                    if (isValid(board, i, j, c)) {
+                        board[i][j] = c;
+
+                        if (solveSudoku(board)) return true;
+                        else board[i][j] = '.';
+                    }
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+const board: Board = [
+    ['9', '5', '7', '.', '1', '3', '.', '8', '4'],
+    ['4', '8', '3', '.', '5', '7', '1', '.', '6'],
+    ['.', '1', '2', '.', '4', '9', '5', '3', '7'],
+    ['1', '7', '.', '3', '.', '4', '9', '.', '2'],
+    ['5', '.', '4', '9', '7', '.', '3', '6', '.'],
+    ['3', '.', '9', '5', '.', '8', '7', '.', '1'],
+    ['8', '4', '5', '7', '9', '.', '6', '1', '3'],
+    ['.', '9', '1', '.', '3', '6', '.', '7', '5'],
+    ['7', '.', '6', '1', '8', '5', '4', '.', '9']
+];
+
+if (solveSudoku(board)) {
+    board.forEach(row => console.log(row.join(" ")));
+} else {
+    console.log("No solution exists");
+}
+```
+
+```mermaid
+flowchart TD
+    A[Start] --> B[Initialize board with given values]
+    B --> C{Solve Sudoku?}
+    C -->|Yes| D[Loop through each cell in board]
+    D --> E{Is cell empty?}
+    E -->|Yes| F[Try placing digits from 1 to 9]
+    F --> G{Is placement valid?}
+    G -->|Yes| H[Place digit and solve recursively]
+    H --> I{Solved?}
+    I -->|Yes| J[Return true and print board]
+    I -->|No| K[Reset cell to empty and backtrack]
+    K --> F
+    G -->|No| F
+    E -->|No| D
+    C -->|No| L[Print no solution exists]
+    J --> M[End]
+    L --> M
+
+```
